@@ -257,4 +257,4 @@
 
 - 객체 관계
 
-  ![class](C:\Users\SeonghoJang\Desktop\rtsp_server\rtsp_class.png)
+  ![class](https://github.com/seongho9/rtsp_server/blob/main/readme/img/rtsp_class.png?raw=true)
