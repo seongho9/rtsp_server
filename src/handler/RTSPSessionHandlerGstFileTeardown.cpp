@@ -1,8 +1,8 @@
 #include <spdlog/spdlog.h>
 
-#include "session/RTSPFileSession.hpp"
+#include "handler/RTSPSessionHandler.hpp"
 
-int RTSPFileSessionGst::teardown_request()
+int RTSPSessionHandlerGstFile::teardown_request()
 {
     GstStateChangeReturn ret;
 
@@ -18,6 +18,7 @@ int RTSPFileSessionGst::teardown_request()
     gst_object_unref(_rtp_info->pipeline);
 
     delete _rtp_info;
+    _rtp_info = nullptr;
     
     return 0;
 }

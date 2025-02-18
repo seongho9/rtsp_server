@@ -1,9 +1,9 @@
 
 #include <spdlog/spdlog.h>
 
-#include "session/RTSPFileSession.hpp"
+#include "handler/RTSPSessionHandler.hpp"
 
-int RTSPFileSessionGst::play_request(const std::string& time, std::string& rtp_info)
+int RTSPSessionHandlerGstFile::play_request(const std::string& time, std::string& rtp_info)
 {
 
     GstStateChangeReturn ret = gst_element_set_state(_rtp_info->pipeline, GST_STATE_PLAYING);

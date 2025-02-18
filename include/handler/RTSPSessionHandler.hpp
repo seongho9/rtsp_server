@@ -1,20 +1,15 @@
+#ifndef _RTSP_SESSION_HANDLER_HPP
+#define _RTSP_SESSION_HANDLER_HPP
 
-#ifndef _RTSP_SESSION_HPP
-#define _RTSP_SESSION_HPP
-
-#include <string>
-#include <unordered_map>
-
-#include <boost/asio/ip/tcp.hpp>
-#include <boost/asio/strand.hpp>
-#include <boost/asio/read_until.hpp>
-#include <boost/asio.hpp>
 #include <boost/asio/ip/udp.hpp>
+#include <boost/asio.hpp>
 
 #include <gst/gst.h>
 
 #include <boost/hydra/core.hpp>
 #include <boost/hydra/rtsp.hpp>
+
+#include <string>
 
 //  H.264 관련 메타정보
 struct H264CodecInfo
@@ -31,6 +26,7 @@ struct H264CodecInfo
     {    }
 };
 
+//  비디오, 오디오 스트림 정보
 struct DemuxStream
 {
     void* video_stream;
@@ -84,22 +80,10 @@ struct RTPSessionInfoGst
     }
 };
 
-class RTSPFileSession
+class RTSPSessionHandler
 {
-
 public:
-
-    /// @brief RTSPSession 구현체를 가져오는 정적 메소드
-    /// @param ctx boost asio의 io_context(비동기 처리를 위함)
-    /// @param socket 해당 세션에 할당된 TCP 소켓
-    /// @param uuid 세션 id
-    /// @param path uri에 대응되는 영상의 위치
-    /// @return RTSPession 구현체 포인터
-    static RTSPFileSession* build(
-        boost::asio::io_context& ctx, boost::asio::ip::tcp::socket&& socket, 
-        std::string uuid, std::unordered_map<std::string, std::string>& path);
-
-
+    
     /// @brief OPTION 요청 처리 메소드
     /// @param public_value public 헤더에 들어갈 값(반환 값)
     /// @return 0 : 성공, others: 실패
@@ -117,11 +101,9 @@ public:
     /// @param client_port 클라이언트가 RTP와 RTCP를 받아오려는 포트
     /// @param server_port 서버가 RTP와 RTCP를 전송하는 포트(반환 값)
     /// @return 0 : 성공, others : 실패
-    virtual int setup_request(
-        const std::string& path, 
-        const std::string& client_addr, const std::string& client_port, 
-        std::string& server_port
-    )=0;
+    virtual int setup_request(const std::string& path, 
+                            const std::string& client_addr, const std::string& client_port, 
+                            std::string& server_port )=0;
 
     /// @brief PLAY 요청 처리 메소드
     /// @param time 시작 시점(npt based)
@@ -138,76 +120,38 @@ public:
     /// @return 0 : 성공, others : 실패
     virtual int teardown_request()=0;
 
-    /// @brief 초기 TCP 세션 생성시 진입점
-    virtual void run()=0;
-
-    ///  @brief 비동기 읽기 콜백 함수
-    ///  @return 0: 세션을 유지, others : 세션 끊음
-    virtual int read()=0;
-
-    /// @brief 소켓 획득
-    virtual boost::asio::ip::tcp::socket& socket() = 0;
-
-    /// @brief 객체 본인을 삭제, 이 때, 해제 해야하는 자원을 위해 구현체에서 구현
-    virtual void destroy() = 0;
-
-
+    /// @brief 객체 삭제(구현객체를 없애기 위함)
+    /// @return 0 성공
+    virtual int destroy() = 0;
 };
 
-class RTSPFileSessionGst
-    :public RTSPFileSession
+class RTSPSessionHandlerGstFile : public RTSPSessionHandler
 {
 private:
-    std::string _uuid;
-
-    boost::asio::io_context& _context;
-    boost::asio::ip::tcp::socket& _socket;
-
-    std::unordered_map<std::string, std::string>& _path;
-
-    boost::asio::streambuf _buffer;
-    boost::hydra::rtsp::request<boost::hydra::rtsp::string_body> _request;
-
-    std::string _url_path;
-    std::string _file_path;
-
+        
     bool _keep_alive = true;
 
     RTPSessionInfoGst* _rtp_info = nullptr;
     H264CodecInfo* _codec_info = nullptr;
     DemuxStream* _streams = nullptr;
 
+    boost::asio::io_context& _context;
+
 public:
-    RTSPFileSessionGst() = default;
-    RTSPFileSessionGst(
-        boost::asio::io_context& ctx, boost::asio::ip::tcp::socket&& socket, std::string uuid, 
-        std::unordered_map<std::string, std::string>& path
-    );
-
-    ~RTSPFileSessionGst();
-
-    int option_request(std::string& methods) override;
-
+    RTSPSessionHandlerGstFile() = delete;
+    RTSPSessionHandlerGstFile(boost::asio::io_context& context);
+    ~RTSPSessionHandlerGstFile();
+    
+    int option_request(std::string& public_value) override;
     int describe_request(const std::string& path, std::string& sdp) override;
-
-    int setup_request(
-        const std::string& path, 
-        const std::string& client_addr, const std::string& client_port, std::string& server_port ) override;
-
+    int setup_request(const std::string& path, 
+                            const std::string& client_addr, const std::string& client_port, 
+                            std::string& server_port ) override;
     int play_request(const std::string& time, std::string& rtp_info) override;
-
     int pause_request(const std::string& time) override;
-
     int teardown_request() override;
 
-    
-    void destroy();
-
-    void run() override;
-
-    int read() override;
-
-    boost::asio::ip::tcp::socket& socket() override;
+    int destroy() override;
 };
 
 #endif

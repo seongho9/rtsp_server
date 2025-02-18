@@ -11,7 +11,8 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    spdlog::set_level(spdlog::level::info);
+    spdlog::set_level(spdlog::level::debug);
+    spdlog::debug("SET LOG LEVEL = DEBUG");
 
     ip_addr.assign(argv[1]);
 
@@ -26,6 +27,7 @@ int main(int argc, char *argv[])
 
         std::unordered_map<std::string, std::string> path;
         path.insert({"/test", "/home/seongho/sample.mp4"});
+        path.insert({"/earth", "/home/seongho/earth.mp4"});
     
         RTSPListener* listener = 
             new RTSPListenerImpl(ioc, boost::asio::ip::tcp::endpoint(address, port_s), path);

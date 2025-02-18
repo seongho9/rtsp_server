@@ -1,9 +1,9 @@
 
 #include <spdlog/spdlog.h>
 
-#include "session/RTSPFileSession.hpp"
+#include "handler/RTSPSessionHandler.hpp"
 
-int RTSPFileSessionGst::pause_request(const std::string& time)
+int RTSPSessionHandlerGstFile::pause_request(const std::string& time)
 {
 
     GstStateChangeReturn ret = gst_element_set_state(_rtp_info->pipeline, GST_STATE_PAUSED);

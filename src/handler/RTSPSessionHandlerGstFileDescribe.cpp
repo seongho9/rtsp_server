@@ -1,4 +1,3 @@
-
 #include <fstream>
 
 #include <spdlog/spdlog.h>
@@ -6,7 +5,8 @@
 #include <gst/sdp/gstsdpmessage.h>
 #include <gst/app/app.h>
 
-#include "session/RTSPFileSession.hpp"
+#include "handler/RTSPSessionHandler.hpp"
+
 
 namespace asio = boost::asio;
 namespace hydra = boost::hydra;
@@ -17,7 +17,7 @@ static GstFlowReturn new_sample_callback(GstAppSink *appsink, gpointer user_data
 
 static void demux_pad_added(GstElement* src, GstPad* pad, gpointer user_data);
 
-int RTSPFileSessionGst::describe_request(const std::string& path, std::string& sdp)
+int RTSPSessionHandlerGstFile::describe_request(const std::string& path, std::string& sdp)
 {
 
     std::string sdp_path = path.substr(0, path.find(".")).append(".sdp");
@@ -74,7 +74,7 @@ int RTSPFileSessionGst::describe_request(const std::string& path, std::string& s
     g_object_set(filesrc, "location", path.c_str(), NULL);
 
     //  sdp관련 정보를 읽어올 콜백 설정
-    g_object_set(appsink, "emit-signals", TRUE, "sync", FALSE, NULL);
+    g_object_set(appsink, "emit-signals", TRUE, NULL);
     g_signal_connect(appsink, "new-sample", G_CALLBACK(new_sample_callback), static_cast<gpointer>(_codec_info));
 
     //  element 간 연결
@@ -322,8 +322,10 @@ void demux_pad_added(GstElement* src, GstPad* pad, gpointer user_data)
     GstStructure* caps_struct = gst_caps_get_structure(pad_caps, 0);
     const gchar* type = gst_structure_get_name(caps_struct);
     
+    spdlog::debug("[RTSPFileSessionGst:describe_request:demux_pad_add] {}", type);
     //  video의 코덱이 H.264인 경우
     if(g_str_has_prefix(type, "video/x-h264")) {
+        spdlog::debug("[RTSPFileSessionGst:describe_request:demux_pad_add] H.264");
         //  streams에서 video의 stream객체를 가져온다
         GstElement* video_element = static_cast<GstElement*>(streams->video_stream);
 

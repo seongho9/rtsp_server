@@ -2,9 +2,11 @@
 add_executable(main
     main.cpp
     server/RTSPListener.cpp
-    session/RTSPFileSession.cpp session/RTSPFileSessionGst.cpp 
-    session/RTSPFileSessionGstOption.cpp session/RTSPFileSessionGstDescribe.cpp session/RTSPFileSessionGstSetup.cpp session/RTSPFileSessionGstPlay.cpp session/RTSPFileSessionGstPause.cpp session/RTSPFileSessionGstTeardown.cpp
-)
+    session/RTSPSession.cpp session/RTSPSessionImpl.cpp 
+    handler/RTSPSessionHandlerGstFile.cpp 
+    handler/RTSPSessionHandlerGstFileDescribe.cpp   handler/RTSPSessionHandlerGstFileOption.cpp handler/RTSPSessionHandlerGstFilePause.cpp
+    handler/RTSPSessionHandlerGstFilePlay.cpp       handler/RTSPSessionHandlerGstFileSetup.cpp  handler/RTSPSessionHandlerGstFileTeardown.cpp
+    )
 
 message(STATUS "boost path ${Boost_INCLUDE_DIRS}")
 target_link_libraries(

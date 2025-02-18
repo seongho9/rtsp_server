@@ -56,11 +56,11 @@ void RTSPListenerImpl::handle_session(boost::asio::ip::tcp::socket&& socket)
     std::string sess_id = boost::uuids::to_string(_generator());
     spdlog::debug("session id {}", sess_id);
 
-    RTSPFileSession* sess_obj = RTSPFileSession::build(_context, std::move(socket), sess_id, _path);
+    RTSPSession* sess_obj = RTSPSession::build(_context, std::move(socket), sess_id, _path);
 
     sess_obj->run();
 
-    delete sess_obj;
-
+    sess_obj->destroy();
+    
     spdlog::info("[RTSPListenerImpl:handler_session] delete session id - {}", sess_id);
 }

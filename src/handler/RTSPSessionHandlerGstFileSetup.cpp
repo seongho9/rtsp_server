@@ -1,12 +1,14 @@
 #include <gst/app/app.h>
 #include <gst/rtp/rtp.h>
 
+#include <boost/asio/strand.hpp>
+
 #include <spdlog/spdlog.h>
 
-#include "session/RTSPFileSession.hpp"
+#include "handler/RTSPSessionHandler.hpp"
 
 namespace asio = boost::asio;
-namespace hydar = boost::hydra;
+namespace hydra = boost::hydra;
 
 /// @brief qtdemux에서 audio 스트림과 video 스트림을 각각 element에 동적으로 연결하기 위한 콜백
 /// @param src qtdemux
@@ -27,7 +29,7 @@ static GstFlowReturn rtp_appsink_new_sample_callback(GstAppSink* appsink, gpoint
 static GstFlowReturn rtcp_appsink_new_sample_callback(GstAppSink* appsink, gpointer user_data);
 
 
-int RTSPFileSessionGst::setup_request(
+int RTSPSessionHandlerGstFile::setup_request(
     const std::string& path, const std::string& client_addr, const std::string& client_port, std::string& server_port )
 {
     //  RTP 처리에 필요한 변수 선언
@@ -87,8 +89,8 @@ int RTSPFileSessionGst::setup_request(
     //  filesrc에 읽어올 파일 경로 설정
     g_object_set(filesrc, "location", path.c_str(), NULL);
     //  rtp_appsink, rtcp_appsink 관련 설정
-    g_object_set(rtp_appsink, "emit-signals", TRUE, "sync", TRUE, NULL);
-    g_object_set(rtcp_appsink, "emit-signals", TRUE, "sync", TRUE, NULL);
+    g_object_set(rtp_appsink, "emit-signals", TRUE, NULL);
+    g_object_set(rtcp_appsink, "emit-signals", TRUE, NULL);
 
     //  pipeline에 element 등록
     gst_bin_add_many(GST_BIN(pipeline),
@@ -110,7 +112,7 @@ int RTSPFileSessionGst::setup_request(
     GstPad* pay_src_pad  = gst_element_get_static_pad(rtph264pay, "src");
     if(gst_pad_link(pay_src_pad, rtp_sink_pad) != GST_PAD_LINK_OK) {
         spdlog::error("[RTSPFileSessionGst:setup_request] failed to link rtph264pay src - rtpbin send_rtp_sink_0");
-    } 
+    }
     gst_object_unref(rtp_sink_pad);
     gst_object_unref(pay_src_pad);
     //  send_rtp_src_0 of rtpbin - rtp_appsink

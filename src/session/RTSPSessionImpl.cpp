@@ -1,14 +1,14 @@
 
 #include <spdlog/spdlog.h>
 
-#include "session/RTSPFileSession.hpp"
+#include "session/RTSPSession.hpp"
 
 namespace asio = boost::asio;
 namespace hydra = boost::hydra;
 
-static int write_rtsp(RTSPFileSession* session, hydra::rtsp::response<hydra::rtsp::string_body>& res);
+static int write_rtsp(RTSPSessionImpl* session, hydra::rtsp::response<hydra::rtsp::string_body>& res);
 
-RTSPFileSessionGst::RTSPFileSessionGst(
+RTSPSessionImpl::RTSPSessionImpl(
     asio::io_context& ctx, asio::ip::tcp::socket&& socket, std::string uuid, std::unordered_map<std::string, std::string>& path)
     :_context(ctx), _socket(socket), _uuid(uuid), _path(path)
 {   
@@ -22,25 +22,21 @@ RTSPFileSessionGst::RTSPFileSessionGst(
     _file_path.assign("");
 }
 
-RTSPFileSessionGst::~RTSPFileSessionGst()
+RTSPSessionImpl::~RTSPSessionImpl()
 {
     spdlog::debug("RTSP session is destroied");
 
-    if(_rtp_info != nullptr) {
-        delete _rtp_info;
-    }
-
-    if(_codec_info != nullptr) {
-        delete _codec_info;
+    if(_handler != nullptr) {
+        _handler->destroy();
     }
 }
 
-asio::ip::tcp::socket& RTSPFileSessionGst::socket()
+asio::ip::tcp::socket& RTSPSessionImpl::socket()
 {
     return _socket;
 }
 
-void RTSPFileSessionGst::run()
+void RTSPSessionImpl::run()
 {
     //  소켓이 열려 있는 동안만 반복
     if(!_socket.is_open()){
@@ -83,7 +79,7 @@ void RTSPFileSessionGst::run()
     }
 }
 
-int RTSPFileSessionGst::read()
+int RTSPSessionImpl::read()
 {
     hydra::rtsp::response<hydra::rtsp::string_body> res;
 
@@ -100,6 +96,13 @@ int RTSPFileSessionGst::read()
         _url_path.assign(_url_path.substr(idx, _url_path.length() - idx));
 
         _file_path.assign(_path[_url_path]);
+
+        if(_file_path.find("/dev") != _file_path.npos) {
+
+        }
+        else {
+            _handler = new RTSPSessionHandlerGstFile(_context);
+        }
     }
 
     res.version(10);
@@ -114,7 +117,7 @@ int RTSPFileSessionGst::read()
         spdlog::info("RTSPSession : OPTIONS {}", _socket.remote_endpoint().address().to_string());
         
         std::string methods;
-        int ret = option_request(methods);
+        int ret = _handler->option_request(methods);
 
         //  응답처리
         res.result(hydra::rtsp::status::ok);
@@ -129,7 +132,7 @@ int RTSPFileSessionGst::read()
         spdlog::info("RTSPSession : DESCRIBE {}", _socket.remote_endpoint().address().to_string());
 
         std::string sdp;
-        int ret = describe_request(_file_path, sdp);
+        int ret = _handler->describe_request(_file_path, sdp);
 
         //  예외처리
         if(!ret) {
@@ -181,7 +184,7 @@ int RTSPFileSessionGst::read()
         //  받아올 server가 할당한 포트
         std::string server_ports;
 
-        int ret = setup_request(_file_path, client_address, client_ports, server_ports);
+        int ret = _handler->setup_request(_file_path, client_address, client_ports, server_ports);
 
         //  예외처리
         if(ret) {
@@ -208,7 +211,7 @@ int RTSPFileSessionGst::read()
         std::string range = _request["Range"];
         std::string info;
 
-        int ret = play_request(range, info);
+        int ret = _handler->play_request(range, info);
 
         //  예외처리
         if(ret) {
@@ -235,7 +238,7 @@ int RTSPFileSessionGst::read()
 
         std::string range = _request["Range"];
 
-        int ret = pause_request(range);
+        int ret = _handler->pause_request(range);
 
         //  예외처리
         if(ret) {
@@ -258,7 +261,7 @@ int RTSPFileSessionGst::read()
 
         std::string range = _request["Range"];
 
-        int ret = teardown_request();
+        int ret = _handler->teardown_request();
 
         //  예외처리
         if(ret) {
@@ -277,12 +280,12 @@ int RTSPFileSessionGst::read()
     return ret;
 }
 
-void RTSPFileSessionGst::destroy()
+void RTSPSessionImpl::destroy()
 {
     delete this;
 }
 
-int write_rtsp(RTSPFileSession* session, hydra::rtsp::response<hydra::rtsp::string_body>& res)
+int write_rtsp(RTSPSessionImpl* session, hydra::rtsp::response<hydra::rtsp::string_body>& res)
 {
 
     spdlog::debug("write handler");
