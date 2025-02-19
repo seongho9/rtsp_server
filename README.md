@@ -18,3 +18,6 @@ boost beast x Gstreamer 기반의 RTSP 서버
 
 ## 구현 단계
 [mp4 파일 재생](https://github.com/seongho9/rtsp_server/blob/main/readme/step_1.md)
+
+## 추가자료
+[RFC 2326 번역본](https://github.com/seongho9/rfc_2326_ko)
