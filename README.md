@@ -17,7 +17,7 @@ boost beast x Gstreamer 기반의 RTSP 서버
     - gst/gst 
 
 ## 구현 단계
-[mp4 파일 재생](https://github.com/seongho9/rtsp_server/blob/main/readme/step_1.md)
+[mp4 파일 재생](https://github.com/seongho9/rtsp_server/blob/main/readme/step_1.md) <br />
 [실시간 영상(진행중...)](https://github.com/seongho9/rtsp_server/blob/main/readme/step_2.md)
 
 ## 추가자료
