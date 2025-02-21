@@ -13,6 +13,7 @@
 - IGMP Proxyy 혹은 IGMP Snooping을 지원하는 라우터가 필요함 (쉽게 풀면 공유가기 지원해야함)
   
 > <strong> IGMP </strong>
+> 
 > Internet Group Management Protocol
 > Host와 라우터가 Multicast Group을 구성하는데 사용하는 프로토콜
 > 224.0.0.0 - 239.255.255.255 대역의 IP를 사용
