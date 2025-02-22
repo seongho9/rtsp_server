@@ -3,9 +3,14 @@ add_executable(main
     main.cpp
     server/RTSPListener.cpp
     session/RTSPSession.cpp session/RTSPSessionImpl.cpp 
-    handler/RTSPSessionHandlerGstFile.cpp 
-    handler/RTSPSessionHandlerGstFileDescribe.cpp   handler/RTSPSessionHandlerGstFileOption.cpp handler/RTSPSessionHandlerGstFilePause.cpp
-    handler/RTSPSessionHandlerGstFilePlay.cpp       handler/RTSPSessionHandlerGstFileSetup.cpp  handler/RTSPSessionHandlerGstFileTeardown.cpp
+
+    handler/gst_file/RTSPSessionHandlerGstFile.cpp
+    handler/gst_file/RTSPSessionHandlerGstFileDescribe.cpp   handler/gst_file/RTSPSessionHandlerGstFileOption.cpp handler/gst_file/RTSPSessionHandlerGstFilePause.cpp
+    handler/gst_file/RTSPSessionHandlerGstFilePlay.cpp       handler/gst_file/RTSPSessionHandlerGstFileSetup.cpp  handler/gst_file/RTSPSessionHandlerGstFileTeardown.cpp
+
+    handler/gst_live/RTSPSessionHandlerGstLive.cpp           handler/gst_live/MulticastStream.cpp                 handler/gst_live/MulticastStreamV4L2.cpp
+    handler/gst_live/MulticastStreamV4L2MakeSdp.cpp          handler/gst_live/MulticastStreamV4L2PlayStream.cpp   handler/gst_live/MulticastStreamV4L2SetStream.cpp
+         
     )
 
 message(STATUS "boost path ${Boost_INCLUDE_DIRS}")
