@@ -32,7 +32,7 @@
 - 이 때, `RTSPListener`객체의 `path`변수에는 V4L2가 접근하고자 하는 디바이스파일로 설정
 
 #### 객체관계
-(![class_diagram](https://github.com/user-attachments/assets/f687d8a5-6854-4b72-bb19-0701951dd25d)
+(![class_diagram](https://github.com/seongho9/rtsp_server/blob/main/readme/img/multicast_v4l2.png?raw=true)
   
 
 [RPI_CAM](https://github.com/VEDA-Snackticon/RPI-CAM)
