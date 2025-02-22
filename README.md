@@ -1,6 +1,10 @@
 # rtsp_server
 boost x Gstreamer 기반의 RTSP 서버
 
+기 존재하는 RTSP 서버를 사용하지 않고, 더 세밀한 제어가 가능
+
+Boost asio를 이용한 비동기 통신과 Boost beast 기반의 HTTP 프로토콜 처리 경험이 있다면 편하게 사용이 가능
+
 ## 사용 라이브러리
 - boost
   - asio : 비동기 소켓 통신
