@@ -26,6 +26,15 @@
 >   - L2 계층
 >   - 세션에 참여하려는 클라이언트는 IGMP Group에 참여하여 스위치가 해당 패킷을 전송 할 수 있게 해야함
 
+### Multicast with V4L2
+
+- `main()`에서 Multicast Stream에 대한 설정을 끝내고 RTSP서버를 기동해야 함
+- 이 때, `RTSPListener`객체의 `path`변수에는 V4L2가 접근하고자 하는 디바이스파일로 설정
+
+#### 객체관계
+(![class_diagram](https://github.com/user-attachments/assets/f687d8a5-6854-4b72-bb19-0701951dd25d)
+  
+
 [RPI_CAM](https://github.com/VEDA-Snackticon/RPI-CAM)
 
 [클래스 다이어그램](https://app.diagrams.net/#G1QLGUIHpI_GETmKDeIgp0USpYkadUauDd#%7B%22pageId%22%3A%22LKFbRungoBJc7guEyv_5%22%7D)
