@@ -2,6 +2,8 @@
 #include <spdlog/spdlog.h>
 
 #include "session/RTSPSession.hpp"
+#include "handler/RTSPSessionHandler.hpp"
+#include "handler/RTSPSessionHandlerLive.hpp"
 
 namespace asio = boost::asio;
 namespace hydra = boost::hydra;
@@ -51,8 +53,13 @@ void RTSPSessionImpl::run()
         //  TCP FIN
         if(ec == hydra::rtsp::error::end_of_stream) {
             spdlog::info("RTSPSession : Close TCP Connection");
-            _socket.shutdown(asio::socket_base::shutdown_receive);
-            _socket.close();
+            try{
+                _socket.shutdown(asio::socket_base::shutdown_receive);
+                _socket.close();
+            }
+            catch(boost::system::system_error& e) {
+                spdlog::error("RTSPSession : close tcp error {}", e.what());
+            }
         }
         //  Operation aborted
         else if(ec == asio::error::operation_aborted){
@@ -98,7 +105,7 @@ int RTSPSessionImpl::read()
         _file_path.assign(_path[_url_path]);
 
         if(_file_path.find("/dev") != _file_path.npos) {
-
+            _handler = new RTSPSessionHandlerGstLive(_context);
         }
         else {
             _handler = new RTSPSessionHandlerGstFile(_context);
@@ -182,9 +189,10 @@ int RTSPSessionImpl::read()
         std::string client_ports = _request["Transport"].substr(client_port_pos, _request["Transport"].length() - client_port_pos);
 
         //  받아올 server가 할당한 포트
-        std::string server_ports;
+        std::string transport;
 
-        int ret = _handler->setup_request(_file_path, client_address, client_ports, server_ports);
+        int ret = _handler->setup_request(_file_path, client_address, client_ports, transport);
+        res.set("Transport", transport);
 
         //  예외처리
         if(ret) {
@@ -194,10 +202,10 @@ int RTSPSessionImpl::read()
         //  응답처리
         res.result(hydra::rtsp::status::ok);
         //  Transport 헤더
-        std::string transport = _request["Transport"];
-        transport.append(";").append("server_port=").append(server_ports);
-        res.set("Transport", transport);
+        std::string transport_header = _request["Transport"];
+        transport_header.append(";").append(transport);
 
+        spdlog::debug("Transport : {}", transport_header);
         //  세션 id는 객체 생성시 생성된 uuid를 사용
         res.set("Session", _uuid);
 
