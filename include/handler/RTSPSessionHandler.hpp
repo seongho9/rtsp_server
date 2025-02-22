@@ -103,7 +103,7 @@ public:
     /// @return 0 : 성공, others : 실패
     virtual int setup_request(const std::string& path, 
                             const std::string& client_addr, const std::string& client_port, 
-                            std::string& server_port )=0;
+                            std::string& transport_header )=0;
 
     /// @brief PLAY 요청 처리 메소드
     /// @param time 시작 시점(npt based)
@@ -146,7 +146,7 @@ public:
     int describe_request(const std::string& path, std::string& sdp) override;
     int setup_request(const std::string& path, 
                             const std::string& client_addr, const std::string& client_port, 
-                            std::string& server_port ) override;
+                            std::string& transport_header ) override;
     int play_request(const std::string& time, std::string& rtp_info) override;
     int pause_request(const std::string& time) override;
     int teardown_request() override;
