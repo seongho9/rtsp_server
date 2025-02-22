@@ -1,5 +1,5 @@
 # rtsp_server
-boost beast x Gstreamer 기반의 RTSP 서버
+boost x Gstreamer 기반의 RTSP 서버
 
 ## 사용 라이브러리
 - boost
