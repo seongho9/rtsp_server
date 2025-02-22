@@ -17,7 +17,6 @@ RTSPSessionHandlerGstFile::~RTSPSessionHandlerGstFile()
         spdlog::debug("delete gst handler : codec info");
         delete _codec_info;
     }
-    
 }
 
 int RTSPSessionHandlerGstFile::destroy()

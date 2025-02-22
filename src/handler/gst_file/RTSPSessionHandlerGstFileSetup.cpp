@@ -30,7 +30,7 @@ static GstFlowReturn rtcp_appsink_new_sample_callback(GstAppSink* appsink, gpoin
 
 
 int RTSPSessionHandlerGstFile::setup_request(
-    const std::string& path, const std::string& client_addr, const std::string& client_port, std::string& server_port )
+    const std::string& path, const std::string& client_addr, const std::string& client_port, std::string& transport_header )
 {
     //  RTP 처리에 필요한 변수 선언
     if(_rtp_info != nullptr) {
@@ -157,9 +157,10 @@ int RTSPSessionHandlerGstFile::setup_request(
     //  rtcp 수신 포트번호 설정
     g_object_set(rtcp_udpsrc, "port", local_endpoint.port() + 1, NULL);
 
-    server_port.assign(std::to_string(local_endpoint.port()));
-    server_port.append("-");
-    server_port.append(std::to_string(local_endpoint.port()+1));
+    transport_header.append("server_port=");
+    transport_header.append(std::to_string(local_endpoint.port()));
+    transport_header.append("-");
+    transport_header.append(std::to_string(local_endpoint.port()+1));
 
     //  pipeline 상태 변경
     GstStateChangeReturn ret;
