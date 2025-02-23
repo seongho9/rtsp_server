@@ -15,7 +15,7 @@
 ### Multicast with V4L2
 - V4L2로 받아온 영상프레임을 RTP 패킷으로 만들어서 Multicast로 전달
 #### Requirements
-- IGMP Proxyy 혹은 IGMP Snooping을 지원하는 라우터가 필요함 (쉽게 풀면 공유가기 지원해야함)
+- IGMP Proxyy 혹은 IGMP Snooping을 지원하는 라우터가 필요함
   
 > <strong> IGMP </strong>
 > 
