@@ -25,7 +25,7 @@
 > - IGMP Proxy
 >   - Multicast 패킷을 라우팅하여 다른 네트워크로 전달
 >   - L3 계층
->   - 라우터 하위의 네트워크 노드들에게 Broadcasting을 진행함(즉, Wi-Fi와 같은 Broadcasting을 지원하지 않는 경우 사용 할 수 없음
+>   - 라우터 하위의 네트워크 노드들에게 Broadcasting을 진행함
 > - IGMP Snooping
 >   - Multicast 패킷을 필요한 포트로만 전달
 >   - L2 계층
