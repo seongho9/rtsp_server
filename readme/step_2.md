@@ -1,7 +1,7 @@
 ## 2. 실시간 스트리밍
 
 ### 추가 자료
-[RPI_CAM](https://github.com/VEDA-Snackticon/RPI-CAM)
+[RPI_CAM]([https://github.com/VEDA-Snackticon/RPI-CAM](https://github.com/seongho9/RPI-CAM))
 
 [클래스 다이어그램](https://app.diagrams.net/#G1QLGUIHpI_GETmKDeIgp0USpYkadUauDd#%7B%22pageId%22%3A%22LKFbRungoBJc7guEyv_5%22%7D)
 
