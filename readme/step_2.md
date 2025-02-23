@@ -39,13 +39,15 @@
 #### 객체관계
 
 ##### 기존 MP4 파일만을 스트리밍 할 수 있던 방식과의 차이점
-- Boost asio가 생성하는 세션 객체까지는 동일
+- Boost asio가 생성하는 Session 객체까지는 동일
 - Session 객체는 RTP 미디어 처리가 아닌 RTSP 패킷을 파싱 및 직렬화 하는 데만 집중하도록 변경
 - 별도 Handler 객체를 추가하였으며, Handler 객체에서 RTP 미디어를 처리하도록 함
   
 ##### Session 객체와 Handler객체를 분화한 이유
-- Session 객체와 Handler객체의 책임범위를 단일화
-- Session 객체의 생성 시점에 해당 요청이 요구하는 스트림의 정보를 알 수 없기 때문에 Handler객체를 맴버 변수로 소유하면서 Session 객체의 변경없이 유동적으로 변경이 가능하도록 설계
+- Session 객체와 Handler객체에게 단일 책임을 부여하기 위함
+  - Session : RTSP 패킷 생성 및 분석
+  - Handler : RTSP 요청에 따른 미디어 스트림 관리
+- Session 객체 생성 시점에 RTSP 요청이 요구하는 스트림의 정보를 알 수 없음, 따라서 Handler객체를 맴버 변수로 소유하게 하여 Session 객체의 변경없이 유동적으로 변경이 가능하도록 설계
 
 ![class_diagram](https://github.com/seongho9/rtsp_server/blob/main/readme/img/multicast_v4l2.png?raw=true)
   
