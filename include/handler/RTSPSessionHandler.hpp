@@ -6,8 +6,8 @@
 
 #include <gst/gst.h>
 
-#include "hydra/core.hpp"
-#include "hydra/rtsp.hpp"
+#include <boost/hydra/core.hpp>
+#include <boost/hydra/rtsp.hpp>
 
 #include <string>
 
