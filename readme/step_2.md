@@ -1,7 +1,7 @@
 ## 2. 실시간 스트리밍
 
 ### 추가 자료
-[RPI_CAM](https://github.com/VEDA-Snackticon/RPI-CAM)
+[RPI_CAM](https://github.com/seongho9/RPI-CAM)
 
 [클래스 다이어그램](https://app.diagrams.net/#G1QLGUIHpI_GETmKDeIgp0USpYkadUauDd#%7B%22pageId%22%3A%22LKFbRungoBJc7guEyv_5%22%7D)
 
@@ -15,7 +15,7 @@
 ### Multicast with V4L2
 - V4L2로 받아온 영상프레임을 RTP 패킷으로 만들어서 Multicast로 전달
 #### Requirements
-- IGMP Proxyy 혹은 IGMP Snooping을 지원하는 라우터가 필요함 (쉽게 풀면 공유가기 지원해야함)
+- IGMP Proxyy 혹은 IGMP Snooping을 지원하는 라우터가 필요함
   
 > <strong> IGMP </strong>
 > 
@@ -25,7 +25,7 @@
 > - IGMP Proxy
 >   - Multicast 패킷을 라우팅하여 다른 네트워크로 전달
 >   - L3 계층
->   - 라우터 하위의 네트워크 노드들에게 Broadcasting을 진행함(즉, Wi-Fi와 같은 Broadcasting을 지원하지 않는 경우 사용 할 수 없음
+>   - 라우터 하위의 네트워크 노드들에게 Broadcasting을 진행함
 > - IGMP Snooping
 >   - Multicast 패킷을 필요한 포트로만 전달
 >   - L2 계층
@@ -37,5 +37,17 @@
 - 이 때, `RTSPListener`객체의 `path`변수에는 V4L2가 접근하고자 하는 디바이스파일로 설정
 
 #### 객체관계
+
+##### 기존 MP4 파일만을 스트리밍 할 수 있던 방식과의 차이점
+- Boost asio가 생성하는 Session 객체까지는 동일
+- Session 객체는 RTP 미디어 처리가 아닌 RTSP 패킷을 파싱 및 직렬화 하는 데만 집중하도록 변경
+- 별도 Handler 객체를 추가하였으며, Handler 객체에서 RTP 미디어를 처리하도록 함
+  
+##### Session 객체와 Handler객체를 분화한 이유
+- Session 객체와 Handler객체에게 단일 책임을 부여하기 위함
+  - Session : RTSP 패킷 생성 및 분석
+  - Handler : RTSP 요청에 따른 미디어 스트림 관리
+- Session 객체 생성 시점에 RTSP 요청이 요구하는 스트림의 정보를 알 수 없음, 따라서 Handler객체를 맴버 변수로 소유하게 하여 Session 객체의 변경없이 유동적으로 변경이 가능하도록 설계
+
 ![class_diagram](https://github.com/seongho9/rtsp_server/blob/main/readme/img/multicast_v4l2.png?raw=true)
   
