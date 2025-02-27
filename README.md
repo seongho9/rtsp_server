@@ -22,7 +22,8 @@ Boost asio를 이용한 비동기 통신과 Boost beast 기반의 HTTP 프로토
 
 ## 구현 단계
 [mp4 파일 재생](https://github.com/seongho9/rtsp_server/blob/main/readme/step_1.md) <br />
-[실시간 영상(V4L2를 통한 접근 완료)](https://github.com/seongho9/rtsp_server/blob/main/readme/step_2.md)
+[실시간 영상](https://github.com/seongho9/rtsp_server/blob/main/readme/step_2.md) <br />
+[RPI-CAM](https://github.com/seongho9/RPI-CAM)
 
 ## 추가자료
 [RFC 2326 번역본](https://github.com/seongho9/rfc_2326_ko)
