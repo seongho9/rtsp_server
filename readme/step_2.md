@@ -49,5 +49,5 @@
   - Handler : RTSP 요청에 따른 미디어 스트림 관리
 - Session 객체 생성 시점에 RTSP 요청이 요구하는 스트림의 정보를 알 수 없음, 따라서 Handler객체를 맴버 변수로 소유하게 하여 Session 객체의 변경없이 유동적으로 변경이 가능하도록 설계
 
-![class_diagram](https://github.com/seongho9/rtsp_server/blob/main/readme/img/multicast_v4l2.png?raw=true)
+![class_diagram](https://github.com/seongho9/rtsp_server/blob/main/readme/img/multicast.png?raw=true)
   
